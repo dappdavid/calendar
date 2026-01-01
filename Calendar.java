@@ -8,7 +8,7 @@ import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class CalendarFolderGenerator {
+public class Calendar {
 
     private static int YEAR = 2026;
 

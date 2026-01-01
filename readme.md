@@ -12,7 +12,7 @@ Each month will have its own folder, and each day will be a text file named like
 
 ## What to Edit Before Running
 
-- **Holidays**: In `CalendarFolderGenerator.java`, Modify the HOLIDAYS array to include the holidays you want:
+- **Holidays**: In `Calendar.java`, modify the HOLIDAYS array to include the holidays you want:
    ```java
    private static final LocalDate[] HOLIDAYS = new LocalDate[]{
     LocalDate.of(YEAR, 1, 26), // January 26
@@ -23,17 +23,17 @@ Each month will have its own folder, and each day will be a text file named like
    ```
 ## How to Run
 
-1. After editing the above points, save the `CalendarFolderGenerator.java` file in a folder.
+1. After editing the above points, save the `Calendar.java` file in a folder.
 2. Open **Command Prompt** (Windows) or **Terminal** (Linux/Mac).
-3. Navigate to the folder containing `CalendarFolderGenerator.java`.
+3. Navigate to the folder containing `Calendar.java`.
 4. Compile the Java class:
 
    ```sh
-   javac CalendarFolderGenerator.java
+   javac Calendar.java
     ```
 5. Run the class with the **desired year** as an argument (if no year is provided, it defaults to 2026):
     ```sh
-    java CalendarFolderGenerator 2026
+    java Calendar 2026
     ```
 6. The program will create the calendar folders in the same directory:
    - `work-calendar-2026`
