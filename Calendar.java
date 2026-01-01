@@ -11,7 +11,8 @@ import java.util.Locale;
 public class Calendar {
 
     private static int YEAR = 2026;
-
+    public static final int WORKING_HOURS_PER_DAY = 9;
+    public static final int FREE_HOURS_ON_TIME_OFFS = 12;
     // Holidays
     private static final LocalDate[] HOLIDAYS = new LocalDate[]{
             LocalDate.of(YEAR, 1, 1),
@@ -151,11 +152,11 @@ public class Calendar {
         String content;
         if (WORK.equals(calendarType)) {
             int workingDays = isLeapYear(YEAR) ? 366 - freeDays : 365 - freeDays;
-            int workingHours = workingDays * 9;
+            int workingHours = workingDays * WORKING_HOURS_PER_DAY;
             content = String.format("Year %d work report%n%nStats:%n- Number of working days: %d%n- Number of working hours: %d%n",
                     YEAR, workingDays, workingHours);
         } else { // TIMEOFF
-            int freeHours = freeDays * 12;
+            int freeHours = freeDays * FREE_HOURS_ON_TIME_OFFS;
             content = String.format("Year %d timeoff report%n%nStats:%n- Number of free days: %d%n- Number of free hours: %d%n",
                     YEAR, freeDays, freeHours);
         }
