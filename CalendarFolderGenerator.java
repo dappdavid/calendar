@@ -9,9 +9,12 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class CalendarFolderGenerator {
+
     private static final int YEAR = 2026;
-    private static final Path BASE_DIRECTORY = Paths.get("calendar-" + YEAR);
-    private static final boolean EXCLUDE_WEEKENDS_AND_HOLIDAYS = false;
+
+    // Base directories
+    private static final Path WORK_CALENDAR_DIR = Paths.get("work-calendar-" + YEAR);
+    private static final Path TIMEOFF_CALENDAR_DIR = Paths.get("timeoff-calendar-" + YEAR);
 
     // Holidays
     private static final LocalDate[] HOLIDAYS = new LocalDate[]{
@@ -20,13 +23,32 @@ public class CalendarFolderGenerator {
             LocalDate.of(YEAR, 10, 2),   // 02 October
             LocalDate.of(YEAR, 12, 25)   // 25 December
     };
+    public static final String WORK = "work";
+    public static final String TIMEOFF = "timeoff";
 
     public static void main(String[] args) {
+        System.out.println("Generating work calendar...");
+        generateCalendar(WORK_CALENDAR_DIR, true, WORK);
+
+        System.out.println("Generating time-off calendar...");
+        generateCalendar(TIMEOFF_CALENDAR_DIR, false, TIMEOFF);
+
+        System.out.println("All calendars for " + YEAR + " created successfully.");
+    }
+
+    /**
+     * Generate a calendar in the given base directory.
+     *
+     * @param baseDir       Path to calendar base directory
+     * @param workDaysOnly  if true, include only workdays; if false, include only weekends + holidays
+     * @param reportType    "work" or "timeoff" (used for report title and metrics)
+     */
+    private static void generateCalendar(Path baseDir, boolean workDaysOnly, String reportType) {
         int totalWeekendDays = 0;
 
         for (int month = 1; month <= 12; month++) {
             YearMonth yearMonth = YearMonth.of(YEAR, month);
-            Path monthFolder = createMonthFolder(yearMonth, month);
+            Path monthFolder = createMonthFolder(baseDir, yearMonth, month);
 
             int daysInMonth = yearMonth.lengthOfMonth();
             for (int day = 1; day <= daysInMonth; day++) {
@@ -38,27 +60,25 @@ public class CalendarFolderGenerator {
 
                 boolean isHoliday = isHoliday(date);
 
-                boolean skipFile = EXCLUDE_WEEKENDS_AND_HOLIDAYS && (isWeekend || isHoliday);
-                if (!skipFile) {
+                boolean includeInCalendar = workDaysOnly ? !(isWeekend || isHoliday) : (isWeekend || isHoliday);
+
+                if (includeInCalendar) {
                     createDayFile(date, monthFolder, dayOfWeek);
                 }
             }
         }
 
-        if (EXCLUDE_WEEKENDS_AND_HOLIDAYS) {
-            generateReport(totalWeekendDays);
-        }
-
-        System.out.println("Calendar folders and files for " + YEAR + " created successfully.");
+        // Generate report for this calendar
+        generateReport(baseDir, totalWeekendDays, reportType);
     }
 
     // --- Helper Methods ---
 
-    private static Path createMonthFolder(YearMonth yearMonth, int month) {
+    private static Path createMonthFolder(Path baseDir, YearMonth yearMonth, int month) {
         String monthNumber = String.format("%02d", month);
         String monthNameShort = yearMonth.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
         String folderName = "Month" + monthNumber + "-" + monthNameShort + YEAR;
-        Path monthFolder = BASE_DIRECTORY.resolve(folderName);
+        Path monthFolder = baseDir.resolve(folderName);
 
         try {
             Files.createDirectories(monthFolder);
@@ -99,7 +119,7 @@ public class CalendarFolderGenerator {
         }
     }
 
-    private static void generateReport(int totalWeekendDays) {
+    private static void generateReport(Path baseDir, int totalWeekendDays, String reportType) {
         // Count holidays that are not on weekends
         int effectiveHolidayCount = 0;
         for (LocalDate holiday : HOLIDAYS) {
@@ -108,21 +128,35 @@ public class CalendarFolderGenerator {
             }
         }
 
-        int freeDays = totalWeekendDays + effectiveHolidayCount;
-        int workingDays = isLeapYear(YEAR) ? 366 - freeDays : 365 - freeDays;
-        int workingHours = workingDays * 9;
-        int freeHours = freeDays * 12;
+        if (reportType.equals(WORK)) {
+            int freeDays = totalWeekendDays + effectiveHolidayCount;
+            int workingDays = isLeapYear(YEAR) ? 366 - freeDays : 365 - freeDays;
+            int workingHours = workingDays * 9;
 
-        Path reportPath = BASE_DIRECTORY.resolve("report.txt");
-        String reportContent = "Year " + YEAR + " report\n\n" +
-                "Stats:\n" +
-                "- Number of working days: " + workingDays + "\n" +
-                "- Number of working hours: " + workingHours + "\n" +
-                "- Number of free days: " + freeDays + "\n" +
-                "- Number of free hours: " + freeHours + "\n";
+            Path reportPath = baseDir.resolve("report.txt");
+            String reportContent = "Year " + YEAR + " work report\n\n" +
+                    "Stats:\n" +
+                    "- Number of working days: " + workingDays + "\n" +
+                    "- Number of working hours: " + workingHours + "\n";
 
+            writeReport(reportPath, reportContent);
+        } else if (reportType.equals(TIMEOFF)) {
+            int freeDays = totalWeekendDays + effectiveHolidayCount;
+            int freeHours = freeDays * 12;
+
+            Path reportPath = baseDir.resolve("report.txt");
+            String reportContent = "Year " + YEAR + " timeoff report\n\n" +
+                    "Stats:\n" +
+                    "- Number of free days: " + freeDays + "\n" +
+                    "- Number of free hours: " + freeHours + "\n";
+
+            writeReport(reportPath, reportContent);
+        }
+    }
+
+    private static void writeReport(Path reportPath, String content) {
         try {
-            Files.writeString(reportPath, reportContent);
+            Files.writeString(reportPath, content);
             System.out.println("Report generated at: " + reportPath);
         } catch (IOException e) {
             System.err.println("Failed to write report: " + reportPath);
