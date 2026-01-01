@@ -2,7 +2,7 @@
 
 This Java program generates three types of calendar folders for a given year:
 
-1. **Work Calendar** (`work-calendar-<year>`): Contains only workdays (weekdays excluding holidays).
+1. **Work Calendar** (`work-calendar-<year>`): Contains only workdays i.e weekdays excluding holidays.
 2. **Time-Off Calendar** (`timeoff-calendar-<year>`): Contains only weekends and holidays.
 3. **All-Days Calendar** (`calendar-<year>`): Contains all days of the year, no exclusions.
 
@@ -12,11 +12,7 @@ Each month will have its own folder, and each day will be a text file named like
 
 ## What to Edit Before Running
 
-1. Year: Change the YEAR constant if you want a calendar for a different year:
-   ```java
-   private static final int YEAR = 2026; // Change to desired year
-   ```
-2. Holidays: Modify the HOLIDAYS array to include the holidays you want:
+- **Holidays**: In `CalendarFolderGenerator.java`, Modify the HOLIDAYS array to include the holidays you want:
    ```java
    private static final LocalDate[] HOLIDAYS = new LocalDate[]{
     LocalDate.of(YEAR, 1, 26), // January 26
@@ -27,7 +23,7 @@ Each month will have its own folder, and each day will be a text file named like
    ```
 ## How to Run
 
-1. Save the `CalendarFolderGenerator.java` file in a folder.
+1. After editing the above points, save the `CalendarFolderGenerator.java` file in a folder.
 2. Open **Command Prompt** (Windows) or **Terminal** (Linux/Mac).
 3. Navigate to the folder containing `CalendarFolderGenerator.java`.
 4. Compile the Java class:
@@ -35,13 +31,13 @@ Each month will have its own folder, and each day will be a text file named like
    ```sh
    javac CalendarFolderGenerator.java
     ```
-5. Run the class
+5. Run the class with the **desired year** as an argument (if no year is provided, it defaults to 2026):
     ```sh
-    java CalendarFolderGenerator
+    java CalendarFolderGenerator 2026
     ```
 6. The program will create the calendar folders in the same directory:
-   - `work-calendar-<year>`
-   - `timeoff-calendar-<year>`
-   - `calendar-<year>`
+   - `work-calendar-2026`
+   - `timeoff-calendar-2026`
+   - `calendar-2026`
 
 
