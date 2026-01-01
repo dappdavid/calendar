@@ -10,12 +10,7 @@ import java.util.Locale;
 
 public class CalendarFolderGenerator {
 
-    private static final int YEAR = 2026;
-
-    // Base directories
-    private static final Path WORK_CALENDAR_DIR = Paths.get("work-calendar-" + YEAR);
-    private static final Path TIMEOFF_CALENDAR_DIR = Paths.get("timeoff-calendar-" + YEAR);
-    private static final Path ALL_CALENDAR_DIR = Paths.get("calendar-" + YEAR);
+    private static int YEAR = 2026;
 
     // Holidays
     private static final LocalDate[] HOLIDAYS = new LocalDate[]{
@@ -30,6 +25,20 @@ public class CalendarFolderGenerator {
     public static final String ALL = "all";
 
     public static void main(String[] args) {
+
+        if (args.length > 0) {
+            try {
+                YEAR = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid year argument, using default year " + YEAR);
+            }
+        }
+
+        // Base directories
+        Path WORK_CALENDAR_DIR = Paths.get("work-calendar-" + YEAR);
+        Path TIMEOFF_CALENDAR_DIR = Paths.get("timeoff-calendar-" + YEAR);
+        Path ALL_CALENDAR_DIR = Paths.get("calendar-" + YEAR);
+
         System.out.println("Generating work calendar...");
         generateCalendar(WORK_CALENDAR_DIR, WORK);
 
