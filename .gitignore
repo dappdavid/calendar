@@ -34,3 +34,8 @@ hs_err_pid*
 *.iws
 out/
 
+# Generated calendar folders
+work-calendar-2026/
+timeoff-calendar-2026/
+calendar-2026/
+
