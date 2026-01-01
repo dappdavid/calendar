@@ -9,13 +9,9 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class CalendarFolderGenerator {
-
     private static final int YEAR = 2026;
     private static final Path BASE_DIRECTORY = Paths.get("calendar-" + YEAR);
-
-    // Flags
-    private static final boolean EXCLUDE_WEEKENDS = true;
-    private static final boolean EXCLUDE_HOLIDAYS = true;
+    private static final boolean EXCLUDE_WEEKENDS_AND_HOLIDAYS = false;
 
     // Holidays
     private static final LocalDate[] HOLIDAYS = new LocalDate[]{
@@ -42,14 +38,14 @@ public class CalendarFolderGenerator {
 
                 boolean isHoliday = isHoliday(date);
 
-                boolean skipFile = (EXCLUDE_WEEKENDS && isWeekend) || (EXCLUDE_HOLIDAYS && isHoliday);
+                boolean skipFile = EXCLUDE_WEEKENDS_AND_HOLIDAYS && (isWeekend || isHoliday);
                 if (!skipFile) {
                     createDayFile(date, monthFolder, dayOfWeek);
                 }
             }
         }
 
-        if (EXCLUDE_WEEKENDS && EXCLUDE_HOLIDAYS) {
+        if (EXCLUDE_WEEKENDS_AND_HOLIDAYS) {
             generateReport(totalWeekendDays);
         }
 
