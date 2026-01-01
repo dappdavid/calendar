@@ -1,6 +1,6 @@
-# Calendar Folder Generator
+# Calendar
 
-This Java program generates three types of calendar folders for a given year:
+This Java program generates three types of calendars for a given year:
 
 1. **Work Calendar** (`work-calendar-<year>`): Contains only workdays i.e weekdays excluding holidays.
 2. **Time-Off Calendar** (`timeoff-calendar-<year>`): Contains only weekends and holidays.
