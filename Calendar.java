@@ -14,6 +14,7 @@ public class Calendar {
 
     // Holidays
     private static final LocalDate[] HOLIDAYS = new LocalDate[]{
+            LocalDate.of(YEAR, 1, 1),
             LocalDate.of(YEAR, 1, 26),
             LocalDate.of(YEAR, 8, 15),
             LocalDate.of(YEAR, 10, 2),
@@ -74,9 +75,9 @@ public class Calendar {
 
                 if (isWeekend(dayOfWeek)) totalWeekendDays++;
 
-                boolean isHoliday = isHoliday(date);
+                boolean isWeekendOrHoliday = isWeekendOrHoliday(dayOfWeek, date);
 
-                boolean include = allDays || (workDaysOnly && !(isWeekend(dayOfWeek) || isHoliday)) || (timeOffOnly && (isWeekend(dayOfWeek) || isHoliday));
+                boolean include = allDays || (workDaysOnly && !isWeekendOrHoliday) || (timeOffOnly && isWeekendOrHoliday);
                 if (include) {
                     createDayFile(date, monthFolder, dayOfWeek);
                 }
@@ -115,6 +116,10 @@ public class Calendar {
             if (holiday.equals(date)) return true;
         }
         return false;
+    }
+
+    private static boolean isWeekendOrHoliday(DayOfWeek dayOfWeek, LocalDate date) {
+        return isWeekend(dayOfWeek) || isHoliday(date);
     }
 
     private static void createDayFile(LocalDate date, Path monthFolder, DayOfWeek dayOfWeek) {
